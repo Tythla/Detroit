@@ -1,7 +1,7 @@
 export const AlbumWall = () => {
-    return <>
-        <div>
-            album wall app
-        </div>
-    </>
+  return (
+    <div>
+      album wall app
+    </div>
+  )
 }
