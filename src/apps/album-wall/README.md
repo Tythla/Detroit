@@ -12,7 +12,9 @@ The desktop layout has two regions:
   scrollable two-column results grid is in the middle, and grid settings remain
   at the bottom.
 - A large album-wall canvas that occupies the remaining space. Its cells are
-  square and arranged in a configurable grid.
+  square and arranged in a configurable grid. The complete grid fits inside the
+  available canvas/viewport beneath the canvas header without internal
+  horizontal or vertical scrolling.
 
 The wall defaults to 5 rows by 5 columns. Rows and columns each use an exact
 decrement/value/increment control with an allowed range of 1–7. Settings also
@@ -106,8 +108,9 @@ future releases an explicit migration boundary.
 `@dnd-kit/react` is the only anticipated new dependency. It is a good fit for a
 grid with multiple drag sources and targets, pointer, touch, and keyboard input,
 accessibility support, and no imposed visual style. Its API is pre-1.0 and may
-change, so all integration should remain isolated inside Album Wall. Do not
-install it until drag-and-drop implementation begins.
+change, so all integration remains isolated inside Album Wall. It is installed
+for the MVP implementation; keep the dependency scoped to this app and revisit
+it if the pre-1.0 API changes materially.
 
 MVP state and actions are small enough for React state plus focused hooks, so
 Zustand or Redux would add unnecessary indirection. The existing search hook
@@ -157,7 +160,11 @@ and coordination that genuinely crosses their boundaries.
 ## Acceptance criteria
 
 - Album Wall renders as one page with the specified desktop sidebar and square
-  wall regions; the wall initially contains 25 empty cells.
+  wall regions; the wall initially contains 25 empty cells, and empty cells have
+  no visible numeric index.
+- The complete rows-by-columns wall grid fits within the available right-side
+  canvas beneath its header for every supported 1×1 through 7×7 dimension; the
+  canvas itself does not scroll on normal desktop layouts.
 - Row and column controls enforce 1–7, display exact values and occupancy, and
   reject any shrink that would discard an occupied cell with actionable
   feedback.
