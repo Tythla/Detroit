@@ -46,22 +46,24 @@ const WallCell = ({
     id: `wall-album-${index}`,
   });
 
+  const isActive = isDropTarget || highlighted;
+
   return (
     <div
       aria-label={album ? `${album.title} by ${album.artist}` : `Empty wall cell ${index + 1}`}
-      className={`wall-cell ${isDropTarget ? "wall-cell--target" : ""} ${
-        highlighted ? "wall-cell--highlighted" : ""
+      className={`wall-cell group relative grid aspect-square h-full min-h-0 min-w-0 place-items-center rounded-[0.4rem] border bg-white outline-none ${
+        isActive ? "wall-cell--active" : "wall-border"
       }`}
       ref={droppableRef}
       role="gridcell"
       tabIndex={0}
     >
       {album ? (
-        <div className="wall-cell__album-wrap">
+        <div className="relative h-full w-full">
           <AlbumCard
             ref={draggableRef}
             album={album}
-            className="wall-album"
+            className="h-full w-full"
             details="overlay"
             focusable
             isDragging={isDragging}
@@ -88,7 +90,7 @@ const WallCell = ({
           />
           <button
             aria-label={`Remove ${album.title} by ${album.artist}`}
-            className="wall-cell__remove"
+            className="wall-remove-btn absolute top-[0.35rem] right-[0.35rem] z-2 grid h-[1.65rem] w-[1.65rem] place-items-center rounded-full text-[1.1rem] leading-none text-white opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100"
             onClick={() => onRemove(index)}
             type="button"
           >
@@ -116,21 +118,25 @@ const WallContent = ({
   );
 
   return (
-    <main className="album-wall-canvas">
-      <div className="wall-canvas__header">
+    <main className="album-wall-canvas flex min-h-0 min-w-0 flex-col gap-5 overflow-hidden max-[760px]:h-auto max-[760px]:min-h-[70vh] max-[760px]:overflow-visible">
+      <div className="mx-auto flex w-full max-w-[1100px] items-end justify-between gap-6 max-[760px]:flex-col max-[760px]:items-start max-[760px]:gap-2">
         <div>
-          <p className="eyebrow">Your collection</p>
+          <p className="wall-eyebrow m-0 mb-[0.3rem]">Your collection</p>
         </div>
       </div>
-      <div className="wall-grid-stage" ref={stageRef}>
+      <div
+        className="grid min-h-0 min-w-0 flex-1 place-items-center overflow-hidden max-[760px]:h-[min(80vw,60vh)] max-[760px]:min-h-64"
+        ref={stageRef}
+      >
         <div
           aria-label={`${state.rows} by ${state.columns} album wall`}
-          className="wall-grid"
+          className="grid max-h-full max-w-full gap-2"
           role="grid"
           style={{
             ...gridStyle,
-            "--wall-columns": state.columns,
-          } as React.CSSProperties}
+            gridAutoRows: "minmax(0, 1fr)",
+            gridTemplateColumns: `repeat(${state.columns}, minmax(0, 1fr))`,
+          }}
         >
           {state.cells.map((album, index) => (
             <WallCell

@@ -210,8 +210,8 @@ export const AlbumWall = () => {
 
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
-      <div className="album-wall-app">
-        <div className="album-wall-shell">
+      <div className="album-wall-app box-border -my-8 ml-[calc(50%-50vw)] h-screen min-h-screen w-screen overflow-hidden text-left max-[760px]:h-auto max-[760px]:overflow-visible">
+        <div className="grid h-full min-h-0 grid-cols-[minmax(270px,320px)_minmax(0,1fr)] overflow-hidden max-[760px]:block max-[760px]:h-auto max-[760px]:overflow-visible">
           <SearchSidebar
             columns={wall.columns}
             draftQuery={draftQuery}
@@ -232,7 +232,11 @@ export const AlbumWall = () => {
             state={wall}
           />
         </div>
-        <p aria-live="polite" className="album-wall-status" role="status">
+        <p
+          aria-live="polite"
+          className="album-wall-status fixed right-4 bottom-4 z-5 m-0 max-w-[min(24rem,calc(100vw-2rem))] px-[0.7rem] py-[0.55rem] text-[0.72rem]"
+          role="status"
+        >
           {statusMessage}
         </p>
       </div>

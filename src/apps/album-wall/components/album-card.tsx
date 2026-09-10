@@ -19,7 +19,10 @@ const AlbumArtwork = ({ album }: { album: Album }) => {
 
   if (!album.artworkUrl || hasError) {
     return (
-      <div className="album-card__artwork album-card__artwork--fallback" aria-hidden="true">
+      <div
+        aria-hidden="true"
+        className="wall-artwork-fallback grid aspect-square w-full place-items-center font-extrabold tracking-[0.06em]"
+      >
         {fallback}
       </div>
     );
@@ -28,7 +31,7 @@ const AlbumArtwork = ({ album }: { album: Album }) => {
   return (
     <img
       alt={`${album.title} cover`}
-      className="album-card__artwork"
+      className="block aspect-square w-full object-cover wall-bg-artwork"
       loading="lazy"
       onError={() => setHasError(true)}
       src={album.artworkUrl}
@@ -63,22 +66,36 @@ export const AlbumCard = forwardRef<HTMLDivElement, AlbumCardProps>(
       }
     };
 
+    const isOverlay = details === "overlay";
+
     return (
       <div
         ref={ref}
         aria-label={`${album.title} by ${album.artist}`}
-        className={`album-card album-card--${details} ${className} ${
-          isDragging ? "album-card--dragging" : ""
-        }`}
+        className={`album-card box-border min-w-0 focus-visible:rounded-[0.35rem] ${
+          isOverlay
+            ? "relative cursor-grab overflow-hidden rounded-[0.3rem]"
+            : "grid gap-[0.35rem] p-[0.2rem]"
+        } ${isDragging ? "opacity-45" : ""} ${className}`}
         onClick={interactive ? onActivate : undefined}
         onKeyDown={handleKeyDown}
         role={interactive || focusable ? "button" : undefined}
         tabIndex={interactive || focusable ? 0 : undefined}
       >
         <AlbumArtwork album={album} />
-        <div className="album-card__details">
-          <strong className="album-card__title">{album.title}</strong>
-          <span className="album-card__artist">{album.artist}</span>
+        <div
+          className={
+            isOverlay
+              ? "wall-overlay-details absolute right-0 bottom-0 left-0 px-[0.45rem] pt-[1.8rem] pb-[0.45rem] text-white opacity-0 group-hover:opacity-100 group-focus-within:opacity-100"
+              : "grid min-w-0 gap-[0.08rem]"
+          }
+        >
+          <strong className="truncate text-[0.72rem]">{album.title}</strong>
+          <span
+            className={`truncate text-[0.68rem] ${isOverlay ? "text-white/80" : "wall-text-muted"}`}
+          >
+            {album.artist}
+          </span>
         </div>
       </div>
     );

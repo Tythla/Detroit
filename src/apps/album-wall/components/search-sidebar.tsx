@@ -23,6 +23,8 @@ type SearchSidebarProps = {
   onDimensionChange: (dimension: "rows" | "columns", value: number) => void;
 };
 
+const formControlClassName = "wall-form-control min-h-[2.2rem]";
+
 const SearchResultCard = ({
   album,
   onAddAlbum,
@@ -40,7 +42,7 @@ const SearchResultCard = ({
     <AlbumCard
       ref={ref}
       album={album}
-      className="search-result"
+      className="cursor-grab bg-white active:cursor-grabbing"
       details="always"
       interactive
       isDragging={isDragging}
@@ -51,23 +53,43 @@ const SearchResultCard = ({
 
 const SearchStatus = ({ state }: { state: AlbumSearchState }) => {
   if (state.status === "loading") {
-    return <p className="search-status">Searching Apple Music…</p>;
+    return (
+      <p className="my-[0.35rem] mb-3 text-[0.8rem] leading-snug wall-text-muted">
+        Searching Apple Music…
+      </p>
+    );
   }
 
   if (state.status === "error") {
-    return <p className="search-status search-status--error">{state.error}</p>;
+    return (
+      <p className="my-[0.35rem] mb-3 text-[0.8rem] leading-snug wall-text-error">
+        {state.error}
+      </p>
+    );
   }
 
   if (state.isTooShort) {
-    return <p className="search-status">Enter at least 2 characters to search.</p>;
+    return (
+      <p className="my-[0.35rem] mb-3 text-[0.8rem] leading-snug wall-text-muted">
+        Enter at least 2 characters to search.
+      </p>
+    );
   }
 
   if (state.status === "empty") {
-    return <p className="search-status">No albums found.</p>;
+    return (
+      <p className="my-[0.35rem] mb-3 text-[0.8rem] leading-snug wall-text-muted">
+        No albums found.
+      </p>
+    );
   }
 
   if (state.status === "idle") {
-    return <p className="search-status">Search by album or song title.</p>;
+    return (
+      <p className="my-[0.35rem] mb-3 text-[0.8rem] leading-snug wall-text-muted">
+        Search by album or song title.
+      </p>
+    );
   }
 
   return null;
@@ -82,20 +104,27 @@ const DimensionControl = ({
   value: number;
   onChange: (value: number) => void;
 }) => (
-  <div className="dimension-control">
-    <span>{label}</span>
-    <div className="dimension-control__actions">
+  <div className="flex items-center justify-between gap-3">
+    <span className="text-[0.75rem] font-[650] wall-text-muted">{label}</span>
+    <div className="grid grid-cols-3 items-center gap-1">
       <button
         aria-label={`Decrease ${label}`}
+        className={`${formControlClassName} wall-btn-accent min-h-[1.8rem] cursor-pointer p-0 text-[1.05rem] leading-none`}
         disabled={value <= 1}
         onClick={() => onChange(value - 1)}
         type="button"
       >
         −
       </button>
-      <output aria-label={`${label} count`}>{value}</output>
+      <output
+        aria-label={`${label} count`}
+        className="text-center text-[0.9rem] tabular-nums"
+      >
+        {value}
+      </output>
       <button
         aria-label={`Increase ${label}`}
+        className={`${formControlClassName} wall-btn-accent min-h-[1.8rem] cursor-pointer p-0 text-[1.05rem] leading-none`}
         disabled={value >= 7}
         onClick={() => onChange(value + 1)}
         type="button"
@@ -119,27 +148,41 @@ export const SearchSidebar = ({
   occupancy,
   onDimensionChange,
 }: SearchSidebarProps) => (
-  <aside className="album-wall-sidebar">
-    <div className="sidebar__search">
-      <div className="sidebar__heading">
-        <p className="eyebrow">Album Wall</p>
-        <h1>Find something to keep</h1>
+  <aside className="flex h-full min-h-0 flex-col overflow-hidden border-r wall-border wall-bg-sidebar max-[760px]:h-auto max-[760px]:border-r-0 max-[760px]:border-b">
+    <div className="border-b p-5 wall-border">
+      <div>
+        <p className="wall-eyebrow m-0 mb-[0.3rem]">Album Wall</p>
+        <h1 className="m-0 text-[1.2rem] tracking-[-0.02em]">
+          Find something to keep
+        </h1>
       </div>
-      <form className="search-form" onSubmit={onSearch}>
-        <label htmlFor="album-search">Search albums or songs</label>
-        <div className="search-form__row">
+      <form className="mt-[1.2rem] grid gap-2" onSubmit={onSearch}>
+        <label className="text-[0.75rem] font-[650] wall-text-muted" htmlFor="album-search">
+          Search albums or songs
+        </label>
+        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-[0.4rem]">
           <input
+            className={`${formControlClassName} box-border w-full bg-white px-[0.6rem] py-2`}
             id="album-search"
             onChange={(event) => onDraftQueryChange(event.target.value)}
             placeholder="Try Fleetwood Mac"
             type="search"
             value={draftQuery}
           />
-          <button type="submit">Search</button>
+          <button
+            className={`${formControlClassName} wall-btn-accent cursor-pointer px-[0.7rem] py-[0.45rem] font-bold`}
+            type="submit"
+          >
+            Search
+          </button>
         </div>
-        <label className="search-form__mode" htmlFor="search-mode">
+        <label
+          className="mt-[0.15rem] grid grid-cols-[auto_minmax(0,1fr)] items-center gap-[0.6rem] text-[0.75rem] font-[650] wall-text-muted"
+          htmlFor="search-mode"
+        >
           Search by
           <select
+            className={`${formControlClassName} box-border w-full bg-white px-[0.6rem] py-2`}
             id="search-mode"
             onChange={(event) =>
               onSearchByChange(event.target.value as AlbumSearchBy)
@@ -157,12 +200,12 @@ export const SearchSidebar = ({
       aria-busy={searchState.isLoading}
       aria-label="Search results"
       aria-live="polite"
-      className="search-results"
+      className="min-h-0 flex-1 overflow-y-auto p-[0.9rem] max-[760px]:max-h-[36vh]"
       role="region"
     >
       <SearchStatus state={searchState} />
       {searchState.albums.length > 0 ? (
-        <div className="search-results__grid">
+        <div className="grid grid-cols-2 gap-[0.55rem]">
           {searchState.albums.map((album) => (
             <SearchResultCard
               album={album}
@@ -174,10 +217,15 @@ export const SearchSidebar = ({
       ) : null}
     </div>
 
-    <section aria-label="Wall settings" className="sidebar__settings">
-      <div className="settings__heading">
-        <h2>Wall settings</h2>
-        <span>{occupancy} / {rows * columns}</span>
+    <section
+      aria-label="Wall settings"
+      className="grid gap-3 border-t p-5 wall-border wall-bg-settings"
+    >
+      <div className="flex items-baseline justify-between gap-2">
+        <h2 className="m-0 text-[0.85rem]">Wall settings</h2>
+        <span className="text-[0.75rem] tabular-nums wall-text-muted">
+          {occupancy} / {rows * columns}
+        </span>
       </div>
       <DimensionControl
         label="Rows"
