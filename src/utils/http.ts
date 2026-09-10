@@ -188,43 +188,43 @@ export const useGet = <TData>(
   url: string,
   options?: Omit<UseHttpOptions<never>, 'body'>,
 ): UseHttpResult<TData, never> =>
-  useHttp<TData, never>(url, 'GET', {
-    ...options,
-    immediate: options?.immediate ?? true,
-  })
+    useHttp<TData, never>(url, 'GET', {
+      ...options,
+      immediate: options?.immediate ?? true,
+    })
 
 export const usePost = <TData, TBody = HttpBody>(
   url: string,
   options?: UseHttpOptions<TBody>,
 ): UseHttpResult<TData, TBody> =>
-  useHttp<TData, TBody>(url, 'POST', {
-    ...options,
-    immediate: options?.immediate ?? false,
-  })
+    useHttp<TData, TBody>(url, 'POST', {
+      ...options,
+      immediate: options?.immediate ?? false,
+    })
 
 export const usePut = <TData, TBody = HttpBody>(
   url: string,
   options?: UseHttpOptions<TBody>,
 ): UseHttpResult<TData, TBody> =>
-  useHttp<TData, TBody>(url, 'PUT', {
-    ...options,
-    immediate: options?.immediate ?? false,
-  })
+    useHttp<TData, TBody>(url, 'PUT', {
+      ...options,
+      immediate: options?.immediate ?? false,
+    })
 
 export const usePatch = <TData, TBody = HttpBody>(
   url: string,
   options?: UseHttpOptions<TBody>,
 ): UseHttpResult<TData, TBody> =>
-  useHttp<TData, TBody>(url, 'PATCH', {
-    ...options,
-    immediate: options?.immediate ?? false,
-  })
+    useHttp<TData, TBody>(url, 'PATCH', {
+      ...options,
+      immediate: options?.immediate ?? false,
+    })
 
 export const useDelete = <TData, TBody = HttpBody>(
   url: string,
   options?: UseHttpOptions<TBody>,
 ): UseHttpResult<TData, TBody> =>
-  useHttp<TData, TBody>(url, 'DELETE', {
-    ...options,
-    immediate: options?.immediate ?? false,
-  })
+    useHttp<TData, TBody>(url, 'DELETE', {
+      ...options,
+      immediate: options?.immediate ?? false,
+    })
