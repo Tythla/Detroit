@@ -8,6 +8,8 @@
 
 ## App Boundaries
 
+- Before working on an individual app, read the README in that app's directory
+  and follow any app-specific instructions it contains.
 - Keep all app-specific code in that app's directory. This includes components,
   hooks, API clients, types, utilities, styles, tests, and assets.
 - Do not place app-specific code in shared top-level directories such as
