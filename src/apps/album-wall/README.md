@@ -28,9 +28,9 @@ MVP does not prescribe a more detailed mobile layout.
 
 Search is a labeled form with a text input and submit button; Enter submits the
 form. Keep `draftQuery` separate from `submittedQuery` so typing does not make a
-request. Album is the default search mode. Retain an optional Album/Song mode
-because the data layer supports both; Song mode returns the albums containing
-matching songs.
+request. Album is the default search mode. Retain an optional inline Album/Song
+toggle because the data layer supports both; Song mode returns the albums
+containing matching songs.
 
 Each result shows cover artwork, album title, and artist. The results area must
 represent loading, no results, error, and query-too-short states without
@@ -169,8 +169,8 @@ and coordination that genuinely crosses their boundaries.
   reject any shrink that would discard an occupied cell with actionable
   feedback.
 - Search runs only on button or Enter submission, defaults to Album mode, and
-  can optionally search by Song without issuing requests for blank or too-short
-  queries.
+  uses an inline Album/Song toggle without issuing requests for blank or
+  too-short queries.
 - Search results render in a scrollable, two-column sidebar grid with artwork,
   title, artist, and verifiable loading, empty, error, and too-short states.
 - Apple album and song responses normalize to the same `Album` model; song

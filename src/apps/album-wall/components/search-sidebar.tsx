@@ -25,6 +25,11 @@ type SearchSidebarProps = {
 
 const formControlClassName = "wall-form-control min-h-[2.2rem]";
 
+const searchModes: { label: string; value: AlbumSearchBy }[] = [
+  { label: "Album", value: "album" },
+  { label: "Song", value: "song" },
+];
+
 const SearchResultCard = ({
   album,
   onAddAlbum,
@@ -152,11 +157,41 @@ export const SearchSidebar = ({
     <h1 className="wall-eyebrow px-5 pt-3">Album Wall</h1>
     <div className="border-b p-5 pt-0 wall-border">
       <form className="mt-[1.2rem] grid gap-2" onSubmit={onSearch}>
-        <label className="text-[0.75rem] font-[650] wall-text-muted" htmlFor="album-search">
+        <div className="flex items-center justify-between gap-2">
+          <span
+            className="text-[0.75rem] font-[650] wall-text-muted"
+            id="search-mode-label"
+          >
+            Search by
+          </span>
+          <div
+            aria-labelledby="search-mode-label"
+            className="flex overflow-hidden rounded-[0.35rem] border wall-border bg-white"
+            role="group"
+          >
+            {searchModes.map((mode) => (
+              <button
+                aria-pressed={searchBy === mode.value}
+                className={`min-h-[1.8rem] cursor-pointer border-0 px-[0.6rem] py-[0.35rem] text-[0.75rem] font-[650] ${
+                  searchBy === mode.value
+                    ? "wall-btn-accent"
+                    : "wall-text-muted"
+                }`}
+                key={mode.value}
+                onClick={() => onSearchByChange(mode.value)}
+                type="button"
+              >
+                {mode.label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <label className="sr-only" htmlFor="album-search">
           Search albums or songs
         </label>
         <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-[0.4rem]">
           <input
+            autoComplete="off"
             className={`${formControlClassName} box-border w-full bg-white px-[0.6rem] py-2`}
             id="album-search"
             onChange={(event) => onDraftQueryChange(event.target.value)}
@@ -171,23 +206,6 @@ export const SearchSidebar = ({
             Search
           </button>
         </div>
-        <label
-          className="mt-[0.15rem] grid grid-cols-[auto_minmax(0,1fr)] items-center gap-[0.6rem] text-[0.75rem] font-[650] wall-text-muted"
-          htmlFor="search-mode"
-        >
-          Search by
-          <select
-            className={`${formControlClassName} box-border w-full bg-white px-[0.6rem] py-2`}
-            id="search-mode"
-            onChange={(event) =>
-              onSearchByChange(event.target.value as AlbumSearchBy)
-            }
-            value={searchBy}
-          >
-            <option value="album">Album</option>
-            <option value="song">Song</option>
-          </select>
-        </label>
       </form>
     </div>
 
