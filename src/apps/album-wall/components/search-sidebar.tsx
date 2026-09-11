@@ -149,13 +149,8 @@ export const SearchSidebar = ({
   onDimensionChange,
 }: SearchSidebarProps) => (
   <aside className="flex h-full min-h-0 flex-col overflow-hidden border-r wall-border wall-bg-sidebar max-[760px]:h-auto max-[760px]:border-r-0 max-[760px]:border-b">
-    <div className="border-b p-5 wall-border">
-      <div>
-        <p className="wall-eyebrow m-0 mb-[0.3rem]">Album Wall</p>
-        <h1 className="m-0 text-[1.2rem] tracking-[-0.02em]">
-          Find something to keep
-        </h1>
-      </div>
+    <h1 className="wall-eyebrow px-5 pt-3">Album Wall</h1>
+    <div className="border-b p-5 pt-0 wall-border">
       <form className="mt-[1.2rem] grid gap-2" onSubmit={onSearch}>
         <label className="text-[0.75rem] font-[650] wall-text-muted" htmlFor="album-search">
           Search albums or songs
