@@ -90,7 +90,7 @@ export const AlbumCard = forwardRef<HTMLDivElement, AlbumCardProps>(
               : "grid min-w-0 gap-[0.08rem]"
           }
         >
-          <strong className="truncate text-[0.72rem]">{album.title}</strong>
+          <strong className="truncate text-[0.72rem]">{album.title} </strong>
           <span
             className={`truncate text-[0.68rem] ${isOverlay ? "text-white/80" : "wall-text-muted"}`}
           >

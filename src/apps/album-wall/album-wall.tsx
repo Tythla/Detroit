@@ -18,6 +18,7 @@ import {
 
 import type { Album } from "./albums/types";
 import type { AlbumWallDragData } from "./drag-and-drop/types";
+import { Header } from "./components/header";
 
 const isAlbumWallDragData = (value: unknown): value is AlbumWallDragData =>
   Boolean(value && typeof value === "object" && "kind" in value);
@@ -157,6 +158,7 @@ export const AlbumWall = () => {
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
       <div className="album-wall-app box-border -my-8 ml-[calc(50%-50vw)] h-screen min-h-screen w-screen overflow-hidden text-left max-[760px]:h-auto max-[760px]:overflow-visible">
+        <Header/>
         <div className="grid h-full min-h-0 grid-cols-[minmax(270px,320px)_minmax(0,1fr)] overflow-hidden max-[760px]:block max-[760px]:h-auto max-[760px]:overflow-visible">
           <SearchSidebar
             columns={wall.columns}
