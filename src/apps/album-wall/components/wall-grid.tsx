@@ -87,14 +87,15 @@ const WallCell = ({
           />
           <div className="wall-remove-btn-wrap">
             <ActionIcon
-              children={<MdClose />}
-              variant="light"
-              autoContrast
               aria-label={`Remove ${album.title} by ${album.artist}`}
+              autoContrast
               className="wall-remove-btn"
               onClick={() => onRemove(index)}
               size="lg"
-            />
+              variant="light"
+            >
+              <MdClose />
+            </ActionIcon>
           </div>
         </div>
       ) : (
@@ -117,7 +118,7 @@ const WallContent = ({
   );
 
   return (
-    <main className="album-wall-canvas flex min-h-0 min-w-0 flex-col gap-5 overflow-hidden max-[760px]:h-auto max-[760px]:min-h-[70vh] max-[760px]:overflow-visible">
+    <div className="album-wall-canvas flex h-full min-h-0 min-w-0 flex-col gap-5 overflow-hidden max-[760px]:h-auto max-[760px]:min-h-[70vh] max-[760px]:overflow-visible">
       <div className="mx-auto flex w-full max-w-275 items-end justify-between gap-6 max-[760px]:flex-col max-[760px]:items-start max-[760px]:gap-2" />
       <div
         className="grid min-h-0 min-w-0 flex-1 place-items-center overflow-hidden max-[760px]:h-[min(80vw,60vh)] max-[760px]:min-h-64"
@@ -144,6 +145,6 @@ const WallContent = ({
           ))}
         </div>
       </div>
-    </main>
+    </div>
   );
 };

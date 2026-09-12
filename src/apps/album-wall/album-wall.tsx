@@ -1,4 +1,5 @@
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
+import { AppShell } from "@mantine/core";
 import { useEffect, useState } from "react";
 
 import { useAlbumSearch, type AlbumSearchBy } from "./albums";
@@ -157,9 +158,14 @@ export const AlbumWall = () => {
 
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
-      <div className="album-wall-app box-border -my-8 ml-[calc(50%-50vw)] flex h-screen min-h-0 w-screen flex-col overflow-hidden text-left max-[760px]:h-auto max-[760px]:overflow-visible">
+      <AppShell
+        className="album-wall-app"
+        header={{ height: 52 }}
+        mode="static"
+        padding={0}
+      >
         <Header />
-        <div className="grid min-h-0 flex-1 grid-cols-[minmax(270px,320px)_minmax(0,1fr)] overflow-hidden max-[760px]:block max-[760px]:h-auto max-[760px]:overflow-visible">
+        <AppShell.Main className="album-wall-main">
           <SearchSidebar
             columns={wall.columns}
             draftQuery={draftQuery}
@@ -178,8 +184,8 @@ export const AlbumWall = () => {
             onKeyboardMove={handleKeyboardMove}
             state={wall}
           />
-        </div>
-      </div>
+        </AppShell.Main>
+      </AppShell>
     </DragDropProvider>
   );
 };
