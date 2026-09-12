@@ -1,17 +1,11 @@
-import './App.css'
 import '@mantine/core/styles.css';
-import { MantineProvider } from '@mantine/core';
+import './App.css'
 import { RouterProvider } from 'react-router-dom'
 
 import { router } from './components/routes'
 
 function App() {
-
-  return (
-    <MantineProvider>
-      <RouterProvider router={router} />
-    </MantineProvider>
-  )
+  return <RouterProvider router={router} />
 }
 
 export default App

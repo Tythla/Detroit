@@ -114,9 +114,10 @@ it if the pre-1.0 API changes materially.
 
 MVP state and actions are small enough for React state plus focused hooks, so
 Zustand or Redux would add unnecessary indirection. The existing search hook
-already handles cancellation and caching, so TanStack Query is not needed. The
-website's current styling can express this interface without adopting a UI
-component library.
+already handles cancellation and caching, so TanStack Query is not needed.
+Album Wall defines an app-local Mantine theme and connects its existing custom
+CSS accent variables to that theme so future Mantine components and current
+controls share the same palette.
 
 ## Proposed app structure
 

@@ -6,8 +6,8 @@
   --wall-canvas-bg: #eef2ee;
   --wall-sidebar-bg: #fbfcfa;
   --wall-settings-bg: #f1f5f1;
-  --wall-accent: #2f6658;
-  --wall-accent-soft: #dcebe5;
+  --wall-accent: var(--mantine-primary-color-filled);
+  --wall-accent-soft: var(--mantine-primary-color-light);
   --wall-error: #a63e35;
   --wall-artwork-bg: #dfe7e1;
   --wall-remove-bg: rgb(29 35 33 / 80%);
@@ -75,7 +75,7 @@
 }
 
 .wall-btn-accent {
-  color: white;
+  color: var(--mantine-primary-color-contrast);
   background: var(--wall-accent);
 }
 
