@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 
 import { useAlbumSearch, type AlbumSearchBy } from "./albums";
 import "./album-wall.css";
+import { Header } from "./components/header";
 import { SearchSidebar } from "./components/search-sidebar";
 import { WallGrid } from "./components/wall-grid";
 import { loadWallState, saveWallState } from "./persistence/storage";
@@ -18,7 +19,6 @@ import {
 
 import type { Album } from "./albums/types";
 import type { AlbumWallDragData } from "./drag-and-drop/types";
-import { Header } from "./components/header";
 
 const isAlbumWallDragData = (value: unknown): value is AlbumWallDragData =>
   Boolean(value && typeof value === "object" && "kind" in value);
@@ -157,9 +157,9 @@ export const AlbumWall = () => {
 
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
-      <div className="album-wall-app box-border -my-8 ml-[calc(50%-50vw)] h-screen min-h-screen w-screen overflow-hidden text-left max-[760px]:h-auto max-[760px]:overflow-visible">
-        <Header/>
-        <div className="grid h-full min-h-0 grid-cols-[minmax(270px,320px)_minmax(0,1fr)] overflow-hidden max-[760px]:block max-[760px]:h-auto max-[760px]:overflow-visible">
+      <div className="album-wall-app box-border -my-8 ml-[calc(50%-50vw)] flex h-screen min-h-0 w-screen flex-col overflow-hidden text-left max-[760px]:h-auto max-[760px]:overflow-visible">
+        <Header />
+        <div className="grid min-h-0 flex-1 grid-cols-[minmax(270px,320px)_minmax(0,1fr)] overflow-hidden max-[760px]:block max-[760px]:h-auto max-[760px]:overflow-visible">
           <SearchSidebar
             columns={wall.columns}
             draftQuery={draftQuery}

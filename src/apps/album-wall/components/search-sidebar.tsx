@@ -154,7 +154,7 @@ export const SearchSidebar = ({
   onDimensionChange,
 }: SearchSidebarProps) => (
   <aside className="flex h-full min-h-0 flex-col overflow-hidden border-r wall-border wall-bg-sidebar max-[760px]:h-auto max-[760px]:border-r-0 max-[760px]:border-b">
-    <div className="border-b p-4 wall-border">
+    <div className="shrink-0 border-b p-4 wall-border">
       <form className="grid gap-2" onSubmit={onSearch}>
         <div className="flex items-center justify-between gap-2">
           <span
@@ -231,7 +231,7 @@ export const SearchSidebar = ({
 
     <section
       aria-label="Wall settings"
-      className="grid gap-3 border-t p-5 wall-border wall-bg-settings"
+      className="grid shrink-0 gap-3 border-t p-5 wall-border wall-bg-settings"
     >
       <div className="flex items-baseline justify-between gap-2">
         <h2 className="m-0 text-[0.85rem]">Wall settings</h2>
