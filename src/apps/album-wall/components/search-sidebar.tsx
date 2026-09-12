@@ -1,5 +1,11 @@
 import { useDraggable } from "@dnd-kit/react";
-import { ActionIcon, Button, Input, Slider, type SliderMark } from "@mantine/core";
+import {
+  ActionIcon,
+  SegmentedControl,
+  Slider,
+  TextInput,
+  type SliderMark,
+} from "@mantine/core";
 import { MdSearch } from "react-icons/md";
 
 import { AlbumCard } from "./album-card";
@@ -156,38 +162,34 @@ export const SearchSidebar = ({
           >
             Search by
           </span>
-          <div
+          <SegmentedControl
             aria-labelledby="search-mode-label"
-            className="flex overflow-hidden rounded-lg border wall-border bg-white"
-            role="group"
-          >
-            {searchModes.map((mode) => (
-              <Button
-                variant={searchBy === mode.value ? "filled" : "subtle"}
-                radius="0"
-                key={mode.value}
-                onClick={() => onSearchByChange(mode.value)}
-              >{mode.label}</Button>
-            ))}
-          </div>
+            autoContrast
+            data={searchModes}
+            onChange={(value) => onSearchByChange(value as AlbumSearchBy)}
+            transitionDuration={0}
+            value={searchBy}
+          />
         </div>
-        <div className="flex flex-row gap-1 ">
-          <Input
+        <div className="flex flex-row gap-1">
+          <TextInput
+            aria-label="Album or song title"
             autoComplete="off"
             className="w-full"
-            variant="default"
             id="album-search"
             onChange={(event) => onDraftQueryChange(event.target.value)}
-            placeholder="Try Fleetwood Mac"
+            placeholder="Try Imaginal Disk"
             type="search"
             value={draftQuery}
           />
           <ActionIcon
-            size='lg'
-            type="submit"
+            aria-label="Search Apple Music"
+            autoContrast
             loading={searchState.isLoading}
+            size="lg"
+            type="submit"
           >
-            <MdSearch/>
+            <MdSearch />
           </ActionIcon>
         </div>
       </form>

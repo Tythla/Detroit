@@ -81,20 +81,9 @@
 }
 
 .wall-form-control:focus-visible,
-.wall-btn-accent:focus-visible,
 .album-card:focus-visible {
   outline: var(--wall-focus-ring);
   outline-offset: 2px;
-}
-
-.wall-btn-accent {
-  color: var(--mantine-primary-color-contrast);
-  background: var(--wall-accent);
-}
-
-.wall-btn-accent:disabled {
-  cursor: not-allowed;
-  opacity: 0.4;
 }
 
 .wall-cell--active {
