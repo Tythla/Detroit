@@ -56,7 +56,7 @@ const WallCell = ({
       tabIndex={0}
     >
       {album ? (
-        <div className="relative h-full w-full">
+        <>
           <AlbumCard
             ref={draggableRef}
             album={album}
@@ -97,7 +97,7 @@ const WallCell = ({
               <MdClose />
             </ActionIcon>
           </div>
-        </div>
+        </>
       ) : (
         null
       )}
@@ -105,9 +105,7 @@ const WallCell = ({
   );
 };
 
-export const WallGrid = (props: WallGridProps) => <WallContent {...props} />;
-
-const WallContent = ({
+export const WallGrid = ({
   state,
   onRemove,
   onKeyboardMove,
@@ -118,8 +116,7 @@ const WallContent = ({
   );
 
   return (
-    <div className="album-wall-canvas flex h-full min-h-0 min-w-0 flex-col gap-5 overflow-hidden max-[760px]:h-auto max-[760px]:min-h-[70vh] max-[760px]:overflow-visible">
-      <div className="mx-auto flex w-full max-w-275 items-end justify-between gap-6 max-[760px]:flex-col max-[760px]:items-start max-[760px]:gap-2" />
+    <div className="album-wall-canvas flex h-full min-h-0 min-w-0 flex-col overflow-hidden max-[760px]:h-auto max-[760px]:min-h-[70vh] max-[760px]:overflow-visible">
       <div
         className="grid min-h-0 min-w-0 flex-1 place-items-center overflow-hidden max-[760px]:h-[min(80vw,60vh)] max-[760px]:min-h-64"
         ref={stageRef}
