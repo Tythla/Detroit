@@ -29,29 +29,15 @@ export const AlbumWall = () => {
   const [draftSearchBy, setDraftSearchBy] = useState<AlbumSearchBy>("album");
   const [submittedSearchBy, setSubmittedSearchBy] =
     useState<AlbumSearchBy>("album");
-  const [highlightedCell, setHighlightedCell] = useState<number | null>(null);
   const searchState = useAlbumSearch(submittedQuery, submittedSearchBy);
 
   useEffect(() => {
     saveWallState(wall);
   }, [wall]);
 
-  const focusWallCell = (index: number) => {
-    setHighlightedCell(index);
-    queueMicrotask(() => {
-      document.getElementById(`wall-cell-${index}`)?.focus();
-    });
-  };
-
   const reportAddResult = (result: ReturnType<typeof addAlbumToFirstEmpty>) => {
     if (result.kind === "added") {
       setWall(result.state);
-      focusWallCell(result.index);
-      return;
-    }
-
-    if (result.kind === "duplicate") {
-      focusWallCell(result.index);
     }
   };
 
@@ -89,7 +75,6 @@ export const AlbumWall = () => {
     }
 
     setWall(updated);
-    setHighlightedCell(null);
   };
 
   const handleKeyboardMove = (
@@ -127,7 +112,6 @@ export const AlbumWall = () => {
     }
 
     setWall(updated);
-    focusWallCell(targetIndex);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -167,7 +151,6 @@ export const AlbumWall = () => {
       }
 
       setWall(updated);
-      focusWallCell(targetData.index);
     }
   };
 
@@ -189,7 +172,6 @@ export const AlbumWall = () => {
             searchState={searchState}
           />
           <WallGrid
-            highlightedCell={highlightedCell}
             onRemove={handleRemove}
             onKeyboardMove={handleKeyboardMove}
             state={wall}

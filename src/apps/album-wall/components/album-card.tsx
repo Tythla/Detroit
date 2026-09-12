@@ -72,9 +72,9 @@ export const AlbumCard = forwardRef<HTMLDivElement, AlbumCardProps>(
       <div
         ref={ref}
         aria-label={`${album.title} by ${album.artist}`}
-        className={`album-card box-border min-w-0 focus-visible:rounded-[0.35rem] ${
+        className={`album-card box-border min-w-0 focus-visible: ${
           isOverlay
-            ? "relative cursor-grab overflow-hidden rounded-[0.3rem]"
+            ? "relative cursor-grab overflow-hidden"
             : "grid gap-[0.35rem] p-[0.2rem]"
         } ${isDragging ? "opacity-45" : ""} ${className}`}
         onClick={interactive ? onActivate : undefined}

@@ -12,20 +12,17 @@ import type { WallState } from "../state/wall-state";
 
 type WallGridProps = {
   state: WallState;
-  highlightedCell: number | null;
   onRemove: (index: number) => void;
   onKeyboardMove: (index: number, direction: "up" | "down" | "left" | "right") => void;
 };
 
 const WallCell = ({
   album,
-  highlighted,
   index,
   onRemove,
   onKeyboardMove,
 }: {
   album: Album | null;
-  highlighted: boolean;
   index: number;
   onRemove: (index: number) => void;
   onKeyboardMove: (index: number, direction: "up" | "down" | "left" | "right") => void;
@@ -46,13 +43,11 @@ const WallCell = ({
     id: `wall-album-${index}`,
   });
 
-  const isActive = isDropTarget || highlighted;
-
   return (
     <div
       aria-label={album ? `${album.title} by ${album.artist}` : `Empty wall cell ${index + 1}`}
-      className={`wall-cell group relative grid aspect-square h-full min-h-0 min-w-0 place-items-center rounded-[0.4rem] border bg-white outline-none ${
-        isActive ? "wall-cell--active" : "wall-border"
+      className={`wall-cell group relative grid aspect-square h-full min-h-0 min-w-0 place-items-center border bg-white outline-none wall-border ${
+        isDropTarget ? "wall-cell--active" : ""
       }`}
       ref={droppableRef}
       role="gridcell"
@@ -108,7 +103,6 @@ export const WallGrid = (props: WallGridProps) => <WallContent {...props} />;
 
 const WallContent = ({
   state,
-  highlightedCell,
   onRemove,
   onKeyboardMove,
 }: WallGridProps) => {
@@ -119,11 +113,7 @@ const WallContent = ({
 
   return (
     <main className="album-wall-canvas flex min-h-0 min-w-0 flex-col gap-5 overflow-hidden max-[760px]:h-auto max-[760px]:min-h-[70vh] max-[760px]:overflow-visible">
-      <div className="mx-auto flex w-full max-w-[1100px] items-end justify-between gap-6 max-[760px]:flex-col max-[760px]:items-start max-[760px]:gap-2">
-        <div>
-          <p className="wall-eyebrow m-0 mb-[0.3rem]">Your collection</p>
-        </div>
-      </div>
+      <div className="mx-auto flex w-full max-w-[1100px] items-end justify-between gap-6 max-[760px]:flex-col max-[760px]:items-start max-[760px]:gap-2" />
       <div
         className="grid min-h-0 min-w-0 flex-1 place-items-center overflow-hidden max-[760px]:h-[min(80vw,60vh)] max-[760px]:min-h-64"
         ref={stageRef}
@@ -141,7 +131,6 @@ const WallContent = ({
           {state.cells.map((album, index) => (
             <WallCell
               album={album}
-              highlighted={highlightedCell === index}
               index={index}
               key={index}
               onKeyboardMove={onKeyboardMove}
