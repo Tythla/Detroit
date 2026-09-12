@@ -1,6 +1,12 @@
 import { useDraggable } from "@dnd-kit/react";
+import { ActionIcon, Button, Input, Slider, type SliderMark } from "@mantine/core";
+import { MdSearch } from "react-icons/md";
 
 import { AlbumCard } from "./album-card";
+import {
+  MAX_WALL_DIMENSION,
+  MIN_WALL_DIMENSION,
+} from "../state/wall-state";
 
 import type {
   AlbumSearchBy,
@@ -22,8 +28,6 @@ type SearchSidebarProps = {
   occupancy: number;
   onDimensionChange: (dimension: "rows" | "columns", value: number) => void;
 };
-
-const formControlClassName = "wall-form-control min-h-[2.2rem]";
 
 const searchModes: { label: string; value: AlbumSearchBy }[] = [
   { label: "Album", value: "album" },
@@ -100,44 +104,30 @@ const SearchStatus = ({ state }: { state: AlbumSearchState }) => {
   return null;
 };
 
-const DimensionControl = ({
-  label,
+const dimensionSliderMarks: SliderMark[] = Array.from(
+  { length: MAX_WALL_DIMENSION - MIN_WALL_DIMENSION - 1 },
+  (_, index) => ({
+    value: MIN_WALL_DIMENSION + 1 + index,
+  }),
+);
+
+const DimensionSlider = ({
   value,
   onChange,
 }: {
-  label: string;
   value: number;
   onChange: (value: number) => void;
 }) => (
-  <div className="flex items-center justify-between gap-3">
-    <span className="text-[0.75rem] font-[650] wall-text-muted">{label}</span>
-    <div className="grid grid-cols-3 items-center gap-1">
-      <button
-        aria-label={`Decrease ${label}`}
-        className={`${formControlClassName} wall-btn-accent min-h-[1.8rem] cursor-pointer p-0 text-[1.05rem] leading-none`}
-        disabled={value <= 1}
-        onClick={() => onChange(value - 1)}
-        type="button"
-      >
-        −
-      </button>
-      <output
-        aria-label={`${label} count`}
-        className="text-center text-[0.9rem] tabular-nums"
-      >
-        {value}
-      </output>
-      <button
-        aria-label={`Increase ${label}`}
-        className={`${formControlClassName} wall-btn-accent min-h-[1.8rem] cursor-pointer p-0 text-[1.05rem] leading-none`}
-        disabled={value >= 7}
-        onClick={() => onChange(value + 1)}
-        type="button"
-      >
-        +
-      </button>
-    </div>
-  </div>
+  <Slider
+    className="w-full"
+    label={(currentValue) => currentValue}
+    marks={dimensionSliderMarks}
+    max={MAX_WALL_DIMENSION}
+    min={MIN_WALL_DIMENSION}
+    onChange={onChange}
+    step={1}
+    value={value}
+  />
 );
 
 export const SearchSidebar = ({
@@ -165,45 +155,37 @@ export const SearchSidebar = ({
           </span>
           <div
             aria-labelledby="search-mode-label"
-            className="flex overflow-hidden rounded-[0.35rem] border wall-border bg-white"
+            className="flex overflow-hidden rounded-lg border wall-border bg-white"
             role="group"
           >
             {searchModes.map((mode) => (
-              <button
-                aria-pressed={searchBy === mode.value}
-                className={`min-h-[1.8rem] cursor-pointer border-0 px-[0.6rem] py-[0.35rem] text-[0.75rem] font-[650] ${
-                  searchBy === mode.value
-                    ? "wall-btn-accent"
-                    : "wall-text-muted"
-                }`}
+              <Button
+                variant={searchBy === mode.value ? "filled" : "subtle"}
+                radius="0"
                 key={mode.value}
                 onClick={() => onSearchByChange(mode.value)}
-                type="button"
-              >
-                {mode.label}
-              </button>
+              >{mode.label}</Button>
             ))}
           </div>
         </div>
-        <label className="sr-only" htmlFor="album-search">
-          Search albums or songs
-        </label>
-        <div className="grid grid-cols-[minmax(0,1fr)_auto] gap-[0.4rem]">
-          <input
+        <div className="flex flex-row gap-1 ">
+          <Input
             autoComplete="off"
-            className={`${formControlClassName} box-border w-full bg-white px-[0.6rem] py-2`}
+            className="w-full"
+            variant="default"
             id="album-search"
             onChange={(event) => onDraftQueryChange(event.target.value)}
             placeholder="Try Fleetwood Mac"
             type="search"
             value={draftQuery}
           />
-          <button
-            className={`${formControlClassName} wall-btn-accent cursor-pointer px-[0.7rem] py-[0.45rem] font-bold`}
+          <ActionIcon
+            size='lg'
             type="submit"
+            loading={searchState.isLoading}
           >
-            Search
-          </button>
+            <MdSearch/>
+          </ActionIcon>
         </div>
       </form>
     </div>
@@ -239,16 +221,18 @@ export const SearchSidebar = ({
           {occupancy} / {rows * columns}
         </span>
       </div>
-      <DimensionControl
-        label="Rows"
-        onChange={(value) => onDimensionChange("rows", value)}
-        value={rows}
-      />
-      <DimensionControl
-        label="Columns"
-        onChange={(value) => onDimensionChange("columns", value)}
-        value={columns}
-      />
+      <div className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-3">
+        <span className="text-[0.75rem] font-[650] wall-text-muted">Rows</span>
+        <DimensionSlider
+          onChange={(value) => onDimensionChange("rows", value)}
+          value={rows}
+        />
+        <span className="text-[0.75rem] font-[650] wall-text-muted">Columns</span>
+        <DimensionSlider
+          onChange={(value) => onDimensionChange("columns", value)}
+          value={columns}
+        />
+      </div>
     </section>
   </aside>
 );

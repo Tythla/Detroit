@@ -2,7 +2,7 @@ import type { Album } from "../albums/types";
 
 export const DEFAULT_WALL_ROWS = 5;
 export const DEFAULT_WALL_COLUMNS = 5;
-export const MIN_WALL_DIMENSION = 1;
+export const MIN_WALL_DIMENSION = 2;
 export const MAX_WALL_DIMENSION = 7;
 
 export type WallState = {
@@ -138,16 +138,16 @@ export const resizeWall = (
   for (let row = 0; row < state.rows; row += 1) {
     for (let column = 0; column < state.columns; column += 1) {
       const sourceIndex = row * state.columns + column;
-      if (
-        state.cells[sourceIndex] &&
-        (row >= rows || column >= columns)
-      ) {
+      if (state.cells[sourceIndex] && (row >= rows || column >= columns)) {
         return null;
       }
     }
   }
 
-  const cells = Array.from({ length: rows * columns }, () => null as Album | null);
+  const cells = Array.from(
+    { length: rows * columns },
+    () => null as Album | null,
+  );
   const rowsToCopy = Math.min(rows, state.rows);
   const columnsToCopy = Math.min(columns, state.columns);
 

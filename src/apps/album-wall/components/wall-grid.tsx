@@ -1,4 +1,5 @@
 import { useDraggable, useDroppable } from "@dnd-kit/react";
+import { CloseButton } from "@mantine/core";
 
 import { AlbumCard } from "./album-card";
 import { useBoundedGridSize } from "../layout/use-bounded-grid-size";
@@ -83,14 +84,14 @@ const WallCell = ({
               );
             }}
           />
-          <button
-            aria-label={`Remove ${album.title} by ${album.artist}`}
-            className="wall-remove-btn absolute top-[0.35rem] right-[0.35rem] z-2 grid h-[1.65rem] w-[1.65rem] place-items-center rounded-full text-[1.1rem] leading-none text-white opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100"
-            onClick={() => onRemove(index)}
-            type="button"
-          >
-            ×
-          </button>
+          <div className="wall-remove-btn-wrap">
+            <CloseButton
+              aria-label={`Remove ${album.title} by ${album.artist}`}
+              className="wall-remove-btn"
+              onClick={() => onRemove(index)}
+              size="lg"
+            />
+          </div>
         </div>
       ) : (
         null

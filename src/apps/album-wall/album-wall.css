@@ -93,9 +93,18 @@
   background: var(--wall-overlay-gradient);
 }
 
-.wall-remove-btn {
-  border: 1px solid rgb(255 255 255 / 80%);
-  background: var(--wall-remove-bg);
+.wall-remove-btn-wrap {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  z-index: 2;
+  opacity: 0;
+}
+
+.group:hover .wall-remove-btn-wrap,
+.group:focus-within .wall-remove-btn-wrap,
+.wall-remove-btn-wrap:focus-within {
+  opacity: 1;
 }
 
 .wall-artwork-fallback {
