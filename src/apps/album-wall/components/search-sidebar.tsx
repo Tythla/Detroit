@@ -118,16 +118,19 @@ const DimensionSlider = ({
   value: number;
   onChange: (value: number) => void;
 }) => (
-  <Slider
-    className="w-full"
-    label={(currentValue) => currentValue}
-    marks={dimensionSliderMarks}
-    max={MAX_WALL_DIMENSION}
-    min={MIN_WALL_DIMENSION}
-    onChange={onChange}
-    step={1}
-    value={value}
-  />
+  <div className="flex flex-row items-center gap-2">
+    <Slider
+      className="w-full"
+      label={(currentValue) => currentValue}
+      marks={dimensionSliderMarks}
+      max={MAX_WALL_DIMENSION}
+      min={MIN_WALL_DIMENSION}
+      onChange={onChange}
+      step={1}
+      value={value}
+    />
+    <p>{value}</p>
+  </div>
 );
 
 export const SearchSidebar = ({

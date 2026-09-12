@@ -1,8 +1,6 @@
 .album-wall-app {
   box-sizing: border-box;
   width: 100vw;
-  height: calc(100dvh + 4rem);
-  max-height: calc(100dvh + 4rem);
   margin: -2rem 0;
   margin-left: calc(50% - 50vw);
   overflow: hidden;
@@ -26,6 +24,12 @@
 
   color: var(--wall-ink);
   background: var(--wall-canvas-bg);
+}
+
+.album-wall-app[data-mode="static"] {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
 }
 
 .wall-text-muted {
