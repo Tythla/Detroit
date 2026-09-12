@@ -54,9 +54,9 @@ const stringValue = (value: unknown): string | null =>
 const isAppleSearchResponse = (value: unknown): value is AppleSearchResponse =>
   Boolean(
     value &&
-      typeof value === "object" &&
-      "results" in value &&
-      Array.isArray(value.results),
+    typeof value === "object" &&
+    "results" in value &&
+    Array.isArray(value.results),
   );
 
 const enlargeArtwork = (value: unknown): string | null => {
@@ -133,7 +133,7 @@ export const searchAppleAlbums = async (
   const parameters = new URLSearchParams({
     country: "US",
     entity: searchBy === "song" ? "song" : "album",
-    explicit: "No",
+    explicit: "Yes",
     limit: String(MAX_RESULTS),
     media: "music",
     term: query,

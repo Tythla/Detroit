@@ -10,9 +10,7 @@
   --wall-accent-soft: #dcebe5;
   --wall-error: #a63e35;
   --wall-artwork-bg: #dfe7e1;
-  --wall-status-bg: rgb(255 255 255 / 94%);
   --wall-remove-bg: rgb(29 35 33 / 80%);
-  --wall-shadow-status: 0 0.3rem 1rem rgb(29 35 33 / 8%);
   --wall-shadow-accent: 0 0 0 3px var(--wall-accent-soft);
   --wall-overlay-gradient: linear-gradient(transparent, rgb(0 0 0 / 82%));
   --wall-focus-ring: 3px solid var(--wall-accent);
@@ -85,14 +83,6 @@
 .wall-btn-accent:disabled {
   cursor: not-allowed;
   opacity: 0.4;
-}
-
-.album-wall-status {
-  border: 1px solid var(--wall-border);
-  border-radius: 0.35rem;
-  color: var(--wall-muted);
-  background: var(--wall-status-bg);
-  box-shadow: var(--wall-shadow-status);
 }
 
 .wall-cell--active {

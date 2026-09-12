@@ -30,9 +30,6 @@ export const AlbumWall = () => {
   const [submittedSearchBy, setSubmittedSearchBy] =
     useState<AlbumSearchBy>("album");
   const [highlightedCell, setHighlightedCell] = useState<number | null>(null);
-  const [statusMessage, setStatusMessage] = useState(
-    "Ready to build your album wall.",
-  );
   const searchState = useAlbumSearch(submittedQuery, submittedSearchBy);
 
   useEffect(() => {
@@ -46,44 +43,26 @@ export const AlbumWall = () => {
     });
   };
 
-  const reportAddResult = (
-    result: ReturnType<typeof addAlbumToFirstEmpty>,
-    album: Album,
-  ) => {
+  const reportAddResult = (result: ReturnType<typeof addAlbumToFirstEmpty>) => {
     if (result.kind === "added") {
       setWall(result.state);
       focusWallCell(result.index);
-      setStatusMessage(`${album.title} added to cell ${result.index + 1}.`);
       return;
     }
 
     if (result.kind === "duplicate") {
       focusWallCell(result.index);
-      setStatusMessage(`${album.title} is already on your wall.`);
-      return;
     }
-
-    if (result.kind === "full") {
-      setStatusMessage("Your wall is full. Remove an album before adding another.");
-      return;
-    }
-
-    setStatusMessage("That wall cell is occupied. Choose an empty cell.");
   };
 
   const addAlbum = (album: Album) => {
-    reportAddResult(addAlbumToFirstEmpty(wall, album), album);
+    reportAddResult(addAlbumToFirstEmpty(wall, album));
   };
 
   const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setSubmittedQuery(draftQuery.trim());
     setSubmittedSearchBy(draftSearchBy);
-    setStatusMessage(
-      draftQuery.trim()
-        ? `Searching for ${draftQuery.trim()}.`
-        : "Enter an album or song title to search.",
-    );
   };
 
   const handleDimensionChange = (
@@ -97,26 +76,20 @@ export const AlbumWall = () => {
     );
 
     if (!updated) {
-      setStatusMessage(
-        "Move or remove albums from the cells outside the smaller wall first.",
-      );
       return;
     }
 
     setWall(updated);
-    setStatusMessage(`Wall resized to ${updated.rows} rows by ${updated.columns} columns.`);
   };
 
   const handleRemove = (index: number) => {
-    const album = wall.cells[index];
     const updated = removeAlbumAt(wall, index);
-    if (!updated || !album) {
+    if (!updated) {
       return;
     }
 
     setWall(updated);
     setHighlightedCell(null);
-    setStatusMessage(`${album.title} removed from your wall.`);
   };
 
   const handleKeyboardMove = (
@@ -144,12 +117,10 @@ export const AlbumWall = () => {
       nextColumn < 0 ||
       nextColumn >= wall.columns
     ) {
-      setStatusMessage("That move would leave the wall.");
       return;
     }
 
     const targetIndex = nextRow * wall.columns + nextColumn;
-    const targetWasOccupied = Boolean(wall.cells[targetIndex]);
     const updated = moveOrSwapAlbum(wall, index, targetIndex);
     if (!updated) {
       return;
@@ -157,7 +128,6 @@ export const AlbumWall = () => {
 
     setWall(updated);
     focusWallCell(targetIndex);
-    setStatusMessage(targetWasOccupied ? "Albums swapped." : "Album moved to its new wall cell.");
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -177,10 +147,9 @@ export const AlbumWall = () => {
     ) {
       const result = addAlbumToCell(wall, sourceData.album, targetData.index);
       if (result.kind === "occupied") {
-        setStatusMessage("That wall cell is occupied. Choose an empty cell.");
         return;
       }
-      reportAddResult(result, sourceData.album);
+      reportAddResult(result);
       return;
     }
 
@@ -188,7 +157,6 @@ export const AlbumWall = () => {
       sourceData.kind === "wall-album" &&
       targetData.kind === "wall-cell"
     ) {
-      const targetWasOccupied = Boolean(wall.cells[targetData.index]);
       const updated = moveOrSwapAlbum(
         wall,
         sourceData.index,
@@ -200,11 +168,6 @@ export const AlbumWall = () => {
 
       setWall(updated);
       focusWallCell(targetData.index);
-      setStatusMessage(
-        targetWasOccupied
-          ? "Albums swapped."
-          : "Album moved to its new wall cell.",
-      );
     }
   };
 
@@ -232,13 +195,6 @@ export const AlbumWall = () => {
             state={wall}
           />
         </div>
-        <p
-          aria-live="polite"
-          className="album-wall-status fixed right-4 bottom-4 z-5 m-0 max-w-[min(24rem,calc(100vw-2rem))] px-[0.7rem] py-[0.55rem] text-[0.72rem]"
-          role="status"
-        >
-          {statusMessage}
-        </p>
       </div>
     </DragDropProvider>
   );
