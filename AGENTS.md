@@ -23,6 +23,7 @@
 
 ## Development Conventions
 
+- Treat the repository-root `.nvmrc` as the source of truth for Node.js; GitHub Actions workflows must use `node-version-file: .nvmrc` with `actions/setup-node` instead of hardcoding a version.
 - Follow the existing React and TypeScript patterns in the repository.
 - Prefer focused changes and preserve the separation between the website shell,
   shared code, and individual apps.
