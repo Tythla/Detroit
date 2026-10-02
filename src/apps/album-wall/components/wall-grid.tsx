@@ -10,9 +10,11 @@ import type {
   WallAlbumDragData,
   WallCellDropData,
 } from "../drag-and-drop/types";
+import type { WallAppearance } from "../state/wall-appearance";
 import type { WallState } from "../state/wall-state";
 
 type WallGridProps = {
+  appearance: WallAppearance;
   state: WallState;
   onRemove: (index: number) => void;
   onKeyboardMove: (index: number, direction: "up" | "down" | "left" | "right") => void;
@@ -106,6 +108,7 @@ const WallCell = ({
 };
 
 export const WallGrid = ({
+  appearance,
   state,
   onRemove,
   onKeyboardMove,
@@ -113,20 +116,28 @@ export const WallGrid = ({
   const { gridStyle, stageRef } = useBoundedGridSize(
     state.rows,
     state.columns,
+    appearance.albumGap,
   );
 
   return (
-    <div className="album-wall-canvas flex h-full min-h-0 min-w-0 flex-col overflow-hidden max-[760px]:h-auto max-[760px]:min-h-[70vh] max-[760px]:overflow-visible">
+    <div
+      className="album-wall-canvas flex h-full min-h-0 min-w-0 flex-col overflow-hidden max-[760px]:h-auto max-[760px]:min-h-[70vh] max-[760px]:overflow-visible"
+      style={{
+        backgroundColor: appearance.backgroundColor,
+        padding: `${appearance.wallPadding}px`,
+      }}
+    >
       <div
         className="grid min-h-0 min-w-0 flex-1 place-items-center overflow-hidden max-[760px]:h-[min(80vw,60vh)] max-[760px]:min-h-64"
         ref={stageRef}
       >
         <div
           aria-label={`${state.rows} by ${state.columns} album wall`}
-          className="grid max-h-full max-w-full gap-2"
+          className="grid max-h-full max-w-full"
           role="grid"
           style={{
             ...gridStyle,
+            gap: `${appearance.albumGap}px`,
             gridAutoRows: "minmax(0, 1fr)",
             gridTemplateColumns: `repeat(${state.columns}, minmax(0, 1fr))`,
           }}

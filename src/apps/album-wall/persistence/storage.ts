@@ -1,4 +1,9 @@
 import {
+  DEFAULT_WALL_APPEARANCE,
+  isWallAppearance,
+  type WallAppearance,
+} from "../state/wall-appearance";
+import {
   createEmptyWall,
   DEFAULT_WALL_COLUMNS,
   DEFAULT_WALL_ROWS,
@@ -9,13 +14,25 @@ import {
 
 import type { Album } from "../albums/types";
 
-const STORAGE_KEY = "detroit:album-wall:v1";
+const STORAGE_KEY_V1 = "detroit:album-wall:v1";
+const STORAGE_KEY_V2 = "detroit:album-wall:v2";
 
-type PersistedAlbumWall = {
+type PersistedAlbumWallV1 = {
   version: 1;
   rows: number;
   columns: number;
   cells: Array<Album | null>;
+};
+
+type PersistedAlbumWallV2 = {
+  version: 2;
+  wall: WallState;
+  appearance: WallAppearance;
+};
+
+export type AlbumWallDocument = {
+  wall: WallState;
+  appearance: WallAppearance;
 };
 
 const isNullableString = (value: unknown): value is string | null =>
@@ -39,18 +56,15 @@ const isAlbum = (value: unknown): value is Album => {
   );
 };
 
-const isPersistedAlbumWall = (
-  value: unknown,
-): value is PersistedAlbumWall => {
+const isWallState = (value: unknown): value is WallState => {
   if (!value || typeof value !== "object") {
     return false;
   }
 
-  const persisted = value as Partial<PersistedAlbumWall>;
-  const rows = persisted.rows;
-  const columns = persisted.columns;
+  const state = value as Partial<WallState>;
+  const rows = state.rows;
+  const columns = state.columns;
   if (
-    persisted.version !== 1 ||
     typeof rows !== "number" ||
     !Number.isInteger(rows) ||
     typeof columns !== "number" ||
@@ -59,14 +73,14 @@ const isPersistedAlbumWall = (
     rows > MAX_WALL_DIMENSION ||
     columns < MIN_WALL_DIMENSION ||
     columns > MAX_WALL_DIMENSION ||
-    !Array.isArray(persisted.cells) ||
-    persisted.cells.length !== rows * columns
+    !Array.isArray(state.cells) ||
+    state.cells.length !== rows * columns
   ) {
     return false;
   }
 
   const albumIds = new Set<string>();
-  return persisted.cells.every((cell) => {
+  return state.cells.every((cell) => {
     if (cell === null) {
       return true;
     }
@@ -80,38 +94,97 @@ const isPersistedAlbumWall = (
   });
 };
 
-export const loadWallState = (): WallState => {
-  const fallback = createEmptyWall(DEFAULT_WALL_ROWS, DEFAULT_WALL_COLUMNS);
+const isPersistedAlbumWallV1 = (
+  value: unknown,
+): value is PersistedAlbumWallV1 => {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const persisted = value as Partial<PersistedAlbumWallV1>;
+  return (
+    persisted.version === 1 &&
+    isWallState({
+      cells: persisted.cells,
+      columns: persisted.columns,
+      rows: persisted.rows,
+    })
+  );
+};
+
+const isPersistedAlbumWallV2 = (
+  value: unknown,
+): value is PersistedAlbumWallV2 => {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+
+  const persisted = value as Partial<PersistedAlbumWallV2>;
+  return (
+    persisted.version === 2 &&
+    isWallState(persisted.wall) &&
+    isWallAppearance(persisted.appearance)
+  );
+};
+
+const createFallbackDocument = (): AlbumWallDocument => ({
+  appearance: { ...DEFAULT_WALL_APPEARANCE },
+  wall: createEmptyWall(DEFAULT_WALL_ROWS, DEFAULT_WALL_COLUMNS),
+});
+
+const parseStoredValue = (stored: string | null): unknown => {
+  if (!stored) {
+    return null;
+  }
+
+  return JSON.parse(stored);
+};
+
+const migrateV1 = (persisted: PersistedAlbumWallV1): AlbumWallDocument => ({
+  appearance: { ...DEFAULT_WALL_APPEARANCE },
+  wall: {
+    cells: persisted.cells,
+    columns: persisted.columns,
+    rows: persisted.rows,
+  },
+});
+
+export const loadAlbumWall = (): AlbumWallDocument => {
+  const fallback = createFallbackDocument();
 
   try {
-    const stored = window.localStorage.getItem(STORAGE_KEY);
-    if (!stored) {
-      return fallback;
+    const current = parseStoredValue(
+      window.localStorage.getItem(STORAGE_KEY_V2),
+    );
+    if (isPersistedAlbumWallV2(current)) {
+      return {
+        appearance: current.appearance,
+        wall: current.wall,
+      };
     }
 
-    const parsed: unknown = JSON.parse(stored);
-    return isPersistedAlbumWall(parsed)
-      ? {
-        rows: parsed.rows,
-        columns: parsed.columns,
-        cells: parsed.cells,
-      }
-      : fallback;
+    const legacy = parseStoredValue(
+      window.localStorage.getItem(STORAGE_KEY_V1),
+    );
+    return isPersistedAlbumWallV1(legacy) ? migrateV1(legacy) : fallback;
   } catch {
     return fallback;
   }
 };
 
-export const saveWallState = (state: WallState) => {
-  const persisted: PersistedAlbumWall = {
-    version: 1,
-    rows: state.rows,
-    columns: state.columns,
-    cells: state.cells,
+export const saveAlbumWall = (document: AlbumWallDocument) => {
+  if (!isWallAppearance(document.appearance)) {
+    return;
+  }
+
+  const persisted: PersistedAlbumWallV2 = {
+    appearance: document.appearance,
+    version: 2,
+    wall: document.wall,
   };
 
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(persisted));
+    window.localStorage.setItem(STORAGE_KEY_V2, JSON.stringify(persisted));
   } catch {
     // Storage can be unavailable in private browsing or restricted contexts.
   }

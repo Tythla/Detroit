@@ -129,7 +129,17 @@
 
 .album-wall-canvas {
   background: var(--wall-surface);
-  padding: clamp(1.25rem, 4vw, 3rem);
+}
+
+.album-wall-export-preview {
+  box-sizing: border-box;
+  height: 18rem;
+  min-height: 16rem;
+  overflow: hidden;
+}
+
+.album-wall-settings-sidebar {
+  width: 100%;
 }
 
 @media (max-width: 760px) {

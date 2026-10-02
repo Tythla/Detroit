@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 
-const GRID_GAP_PX = 8;
-
 type StageSize = {
   height: number;
   width: number;
@@ -11,23 +9,28 @@ const getGridSize = (
   stage: StageSize,
   rows: number,
   columns: number,
+  gap: number,
 ): StageSize => {
   const widthFromHeight =
-    ((stage.height - GRID_GAP_PX * (rows - 1)) / rows) * columns +
-    GRID_GAP_PX * (columns - 1);
+    ((stage.height - gap * (rows - 1)) / rows) * columns +
+    gap * (columns - 1);
   const width = Math.max(0, Math.min(stage.width, widthFromHeight));
   const cellSize =
     columns > 0
-      ? Math.max(0, (width - GRID_GAP_PX * (columns - 1)) / columns)
+      ? Math.max(0, (width - gap * (columns - 1)) / columns)
       : 0;
 
   return {
-    height: cellSize * rows + GRID_GAP_PX * (rows - 1),
+    height: cellSize * rows + gap * (rows - 1),
     width,
   };
 };
 
-export const useBoundedGridSize = (rows: number, columns: number) => {
+export const useBoundedGridSize = (
+  rows: number,
+  columns: number,
+  gap: number,
+) => {
   const stageRef = useRef<HTMLDivElement>(null);
   const [stageSize, setStageSize] = useState<StageSize>({
     height: 0,
@@ -57,7 +60,7 @@ export const useBoundedGridSize = (rows: number, columns: number) => {
     return () => observer.disconnect();
   }, []);
 
-  const gridSize = getGridSize(stageSize, rows, columns);
+  const gridSize = getGridSize(stageSize, rows, columns, gap);
   const gridStyle: CSSProperties | undefined =
     stageSize.width > 0 && stageSize.height > 0
       ? {

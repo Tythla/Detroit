@@ -8,17 +8,23 @@ has no account, server, or database.
 
 The desktop layout has two regions:
 
-- A compact, fixed-width left sidebar. Search is at the top, an independently
-  scrollable two-column results grid is in the middle, and grid settings remain
-  at the bottom.
+- A compact, fixed-width left sidebar. Search is at the top and an independently
+  scrollable two-column results grid occupies the remaining space.
 - A large album-wall canvas that occupies the remaining space. Its cells are
   square and arranged in a configurable grid. The complete grid fits inside the
   available canvas/viewport beneath the canvas header without internal
   horizontal or vertical scrolling.
+- A compact right sidebar contains wall dimensions and appearance controls so
+  search, editing, and customization remain separate concerns.
 
-The wall defaults to 5 rows by 5 columns. Rows and columns each use an exact
-decrement/value/increment control with an allowed range of 1–7. Settings also
-show occupancy, such as `12 / 25`.
+The wall defaults to 5 rows by 5 columns. Rows and columns each use a slider
+with a visible exact value and an allowed range of 1–7. Settings also show
+occupancy, such as `12 / 25`.
+
+Wall appearance includes album gap (0–24 px), wall padding (0–64 px), and a
+background color. The defaults are an 8 px gap, 32 px padding, and `#f6f8f5`.
+Appearance changes update the fitted grid immediately and can be reset without
+changing dimensions or removing albums.
 
 The design is desktop-first. On narrower screens, the sidebar may move above the
 wall or into a drawer, but touch and keyboard access must remain available. The
@@ -63,6 +69,10 @@ not request blank or too-short queries.
 - Every occupied cell has an accessible remove action that appears on hover or
   focus.
 
+The header export action opens a drawer with a live preview of the wall, PNG and
+JPG format options, and an Export button that downloads the current wall as an
+image.
+
 Reducing rows or columns is allowed only when no album occupies a cell that the
 resize would remove. If it would remove an album, keep the current dimensions
 and tell the user to move or remove those albums first. The MVP avoids both
@@ -76,21 +86,21 @@ array of `Album | null`. A cell at a coordinate uses
 coordinates into a newly sized array rather than merely truncating or extending
 the old array.
 
-Persist grid dimensions and wall contents to `localStorage` and restore them on
-load. Use an app-specific key and a small versioned value:
+Persist grid dimensions, wall contents, and appearance to `localStorage` and
+restore them on load. Use an app-specific key and a small versioned value:
 
 ```ts
-type PersistedAlbumWallV1 = {
-  version: 1
-  rows: number
-  columns: number
-  cells: (Album | null)[]
+type PersistedAlbumWallV2 = {
+  version: 2
+  wall: WallState
+  appearance: WallAppearance
 }
 ```
 
 Validate persisted data before use and fall back to a 5×5 empty wall if it is
 missing, unsupported, or invalid. Keeping the version in the stored value gives
-future releases an explicit migration boundary.
+future releases an explicit migration boundary. Valid v1 data is migrated by
+preserving its dimensions and albums and applying the default appearance.
 
 ## Accessibility
 
@@ -123,18 +133,19 @@ controls share the same palette.
 
 All modules stay inside `src/apps/album-wall/`:
 
-- `sidebar/`: search form and mode, result grid and cards, search-state
-  messages, and row/column settings.
+- `components/`: search sidebar, result and wall cards, wall grid, header, and
+  the separate wall-settings sidebar.
 - `wall/`: wall grid, square cells, album overlays, remove actions, and
   occupancy display where appropriate.
 - `albums/`: the normalized album model, Apple provider adapter, and search
   hook.
 - `state/`: wall operations, resize validation, duplicate/full-wall feedback,
-  and the row-major state model.
+  the row-major state model, and validated wall-appearance defaults.
 - `persistence/`: versioned localStorage serialization, validation, restoration,
   and future migrations.
 - `drag-and-drop/`: isolated dnd-kit sensors, sources, targets, keyboard
   behavior, and move/swap coordination.
+- `export/`: canvas rendering and download of the current wall as PNG or JPG.
 
 The page-level Album Wall component composes these areas and owns only the state
 and coordination that genuinely crosses their boundaries.
@@ -148,6 +159,8 @@ and coordination that genuinely crosses their boundaries.
    cell. Duplicate and full-wall checks happen before mutation.
 5. The user moves, swaps, or removes albums and adjusts valid dimensions.
 6. Each accepted wall or dimension change is persisted locally.
+7. The user can open the export drawer to preview the wall and download it as
+   PNG or JPG.
 
 ## MVP non-goals
 
@@ -182,10 +195,12 @@ and coordination that genuinely crosses their boundaries.
 - Click placement, targeted result placement, wall moves, occupied-cell swaps,
   removal, duplicate focus, and full-wall rejection behave as specified without
   overwriting or silently losing albums.
-- Wall dimensions and contents survive reload through validated, versioned
-  localStorage data.
+- Wall dimensions, contents, and appearance survive reload through validated,
+  versioned localStorage data; existing v1 walls migrate without data loss.
 - Search, album actions, grid settings, and move/swap behavior are operable by
   keyboard with visible focus and announced status changes; drag interactions
   also support pointer and touch input.
+- The header export action opens a drawer with a wall preview, PNG and JPG
+  options, and an Export button that downloads the current wall.
 - Album Wall implementation and any eventual dnd-kit integration remain fully
   contained in `src/apps/album-wall/`.

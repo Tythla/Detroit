@@ -2,7 +2,7 @@ import type { Album } from "../albums/types";
 
 export const DEFAULT_WALL_ROWS = 5;
 export const DEFAULT_WALL_COLUMNS = 5;
-export const MIN_WALL_DIMENSION = 2;
+export const MIN_WALL_DIMENSION = 1;
 export const MAX_WALL_DIMENSION = 7;
 
 export type WallState = {

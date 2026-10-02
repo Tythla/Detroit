@@ -1,13 +1,16 @@
 import { DragDropProvider, type DragEndEvent } from "@dnd-kit/react";
 import { AppShell } from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
 import { useEffect, useState } from "react";
 
 import { useAlbumSearch, type AlbumSearchBy } from "./albums";
 import "./album-wall.css";
+import { ExportDrawer } from "./components/export-drawer";
 import { Header } from "./components/header";
 import { SearchSidebar } from "./components/search-sidebar";
 import { WallGrid } from "./components/wall-grid";
-import { loadWallState, saveWallState } from "./persistence/storage";
+import { WallSettingsSidebar } from "./components/wall-settings-sidebar";
+import { loadAlbumWall, saveAlbumWall } from "./persistence/storage";
 import {
   addAlbumToCell,
   addAlbumToFirstEmpty,
@@ -15,7 +18,6 @@ import {
   moveOrSwapAlbum,
   removeAlbumAt,
   resizeWall,
-  type WallState,
 } from "./state/wall-state";
 
 import type { Album } from "./albums/types";
@@ -25,17 +27,23 @@ const isAlbumWallDragData = (value: unknown): value is AlbumWallDragData =>
   Boolean(value && typeof value === "object" && "kind" in value);
 
 export const AlbumWall = () => {
-  const [wall, setWall] = useState<WallState>(() => loadWallState());
+  const [document, setDocument] = useState(loadAlbumWall);
+  const { appearance, wall } = document;
   const [draftQuery, setDraftQuery] = useState("");
   const [submittedQuery, setSubmittedQuery] = useState("");
   const [draftSearchBy, setDraftSearchBy] = useState<AlbumSearchBy>("album");
   const [submittedSearchBy, setSubmittedSearchBy] =
     useState<AlbumSearchBy>("album");
   const searchState = useAlbumSearch(submittedQuery, submittedSearchBy);
+  const [isExportOpen, exportDrawer] = useDisclosure(false);
 
   useEffect(() => {
-    saveWallState(wall);
-  }, [wall]);
+    saveAlbumWall(document);
+  }, [document]);
+
+  const setWall = (nextWall: typeof wall) => {
+    setDocument((current) => ({ ...current, wall: nextWall }));
+  };
 
   const reportAddResult = (result: ReturnType<typeof addAlbumToFirstEmpty>) => {
     if (result.kind === "added") {
@@ -160,31 +168,50 @@ export const AlbumWall = () => {
     <DragDropProvider onDragEnd={handleDragEnd}>
       <AppShell
         className="album-wall-app"
+        aside={{ breakpoint: 0, width: 260 }}
         header={{ height: 52 }}
         mode="static"
         padding={0}
       >
-        <Header />
+        <Header exportOpened={isExportOpen} onExportClick={exportDrawer.open} />
+        <ExportDrawer
+          appearance={appearance}
+          onClose={exportDrawer.close}
+          opened={isExportOpen}
+          wall={wall}
+        />
         <AppShell.Main className="album-wall-main">
           <SearchSidebar
-            columns={wall.columns}
             draftQuery={draftQuery}
-            occupancy={getOccupancy(wall)}
             onAddAlbum={addAlbum}
-            onDimensionChange={handleDimensionChange}
             onDraftQueryChange={setDraftQuery}
             onSearch={handleSearch}
             onSearchByChange={setDraftSearchBy}
-            rows={wall.rows}
             searchBy={draftSearchBy}
             searchState={searchState}
           />
           <WallGrid
+            appearance={appearance}
             onRemove={handleRemove}
             onKeyboardMove={handleKeyboardMove}
             state={wall}
           />
         </AppShell.Main>
+        <AppShell.Aside>
+          <WallSettingsSidebar
+            appearance={appearance}
+            columns={wall.columns}
+            occupancy={getOccupancy(wall)}
+            onAppearanceChange={(nextAppearance) =>
+              setDocument((current) => ({
+                ...current,
+                appearance: nextAppearance,
+              }))
+            }
+            onDimensionChange={handleDimensionChange}
+            rows={wall.rows}
+          />
+        </AppShell.Aside>
       </AppShell>
     </DragDropProvider>
   );

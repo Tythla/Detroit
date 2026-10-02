@@ -2,17 +2,11 @@ import { useDraggable } from "@dnd-kit/react";
 import {
   ActionIcon,
   SegmentedControl,
-  Slider,
   TextInput,
-  type SliderMark,
 } from "@mantine/core";
 import { MdSearch } from "react-icons/md";
 
 import { AlbumCard } from "./album-card";
-import {
-  MAX_WALL_DIMENSION,
-  MIN_WALL_DIMENSION,
-} from "../state/wall-state";
 
 import type {
   AlbumSearchBy,
@@ -29,10 +23,6 @@ type SearchSidebarProps = {
   searchBy: AlbumSearchBy;
   onSearchByChange: (searchBy: AlbumSearchBy) => void;
   searchState: AlbumSearchState;
-  rows: number;
-  columns: number;
-  occupancy: number;
-  onDimensionChange: (dimension: "rows" | "columns", value: number) => void;
 };
 
 const searchModes: { label: string; value: AlbumSearchBy }[] = [
@@ -110,35 +100,6 @@ const SearchStatus = ({ state }: { state: AlbumSearchState }) => {
   return null;
 };
 
-const dimensionSliderMarks: SliderMark[] = Array.from(
-  { length: MAX_WALL_DIMENSION - MIN_WALL_DIMENSION - 1 },
-  (_, index) => ({
-    value: MIN_WALL_DIMENSION + 1 + index,
-  }),
-);
-
-const DimensionSlider = ({
-  value,
-  onChange,
-}: {
-  value: number;
-  onChange: (value: number) => void;
-}) => (
-  <div className="flex flex-row items-center gap-2">
-    <Slider
-      className="w-full"
-      label={(currentValue) => currentValue}
-      marks={dimensionSliderMarks}
-      max={MAX_WALL_DIMENSION}
-      min={MIN_WALL_DIMENSION}
-      onChange={onChange}
-      step={1}
-      value={value}
-    />
-    <p>{value}</p>
-  </div>
-);
-
 export const SearchSidebar = ({
   draftQuery,
   onDraftQueryChange,
@@ -147,10 +108,6 @@ export const SearchSidebar = ({
   searchBy,
   onSearchByChange,
   searchState,
-  rows,
-  columns,
-  occupancy,
-  onDimensionChange,
 }: SearchSidebarProps) => (
   <aside className="flex h-full min-h-0 flex-col overflow-hidden border-r wall-border wall-bg-sidebar max-[760px]:h-auto max-[760px]:border-r-0 max-[760px]:border-b">
     <div className="shrink-0 border-b p-4 wall-border">
@@ -216,28 +173,5 @@ export const SearchSidebar = ({
       ) : null}
     </div>
 
-    <section
-      aria-label="Wall settings"
-      className="grid shrink-0 gap-3 border-t p-5 wall-border wall-bg-settings"
-    >
-      <div className="flex items-baseline justify-between gap-2">
-        <h2 className="m-0 text-[0.85rem]">Wall settings</h2>
-        <span className="text-[0.75rem] tabular-nums wall-text-muted">
-          {occupancy} / {rows * columns}
-        </span>
-      </div>
-      <div className="grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-3">
-        <span className="text-[0.75rem] font-[650] wall-text-muted">Rows</span>
-        <DimensionSlider
-          onChange={(value) => onDimensionChange("rows", value)}
-          value={rows}
-        />
-        <span className="text-[0.75rem] font-[650] wall-text-muted">Columns</span>
-        <DimensionSlider
-          onChange={(value) => onDimensionChange("columns", value)}
-          value={columns}
-        />
-      </div>
-    </section>
   </aside>
 );
