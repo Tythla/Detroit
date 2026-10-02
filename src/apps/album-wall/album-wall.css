@@ -1,0 +1,150 @@
+.album-wall-app {
+  box-sizing: border-box;
+  width: 100vw;
+  margin: -2rem 0;
+  margin-left: calc(50% - 50vw);
+  overflow: hidden;
+  text-align: left;
+
+  --wall-ink: #1d2321;
+  --wall-muted: #65706a;
+  --wall-border: #d5dcd7;
+  --wall-surface: #f6f8f5;
+  --wall-canvas-bg: #eef2ee;
+  --wall-sidebar-bg: #fbfcfa;
+  --wall-settings-bg: #f1f5f1;
+  --wall-accent: var(--mantine-primary-color-filled);
+  --wall-accent-soft: var(--mantine-primary-color-light);
+  --wall-error: #a63e35;
+  --wall-artwork-bg: #dfe7e1;
+  --wall-remove-bg: rgb(29 35 33 / 80%);
+  --wall-shadow-accent: 0 0 0 3px var(--wall-accent-soft);
+  --wall-overlay-gradient: linear-gradient(transparent, rgb(0 0 0 / 82%));
+  --wall-focus-ring: 3px solid var(--wall-accent);
+
+  color: var(--wall-ink);
+  background: var(--wall-canvas-bg);
+}
+
+.album-wall-app[data-mode="static"] {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+.wall-text-muted {
+  color: var(--wall-muted);
+}
+
+.wall-text-error {
+  color: var(--wall-error);
+}
+
+.wall-border {
+  border-color: var(--wall-border);
+}
+
+.wall-bg-surface {
+  background-color: var(--wall-surface);
+}
+
+.wall-bg-sidebar {
+  background-color: var(--wall-sidebar-bg);
+}
+
+.wall-bg-settings {
+  background-color: var(--wall-settings-bg);
+}
+
+.wall-bg-accent {
+  background-color: var(--wall-accent);
+}
+
+.wall-bg-accent-soft {
+  background-color: var(--wall-accent-soft);
+}
+
+.wall-bg-artwork {
+  background-color: var(--wall-artwork-bg);
+}
+
+.wall-eyebrow {
+  color: var(--wall-accent);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.wall-form-control {
+  border: 1px solid var(--wall-border);
+  border-radius: 0.35rem;
+}
+
+.wall-form-control:focus-visible,
+.album-card:focus-visible {
+  outline: var(--wall-focus-ring);
+  outline-offset: 2px;
+}
+
+.wall-cell--active {
+  border-color: var(--wall-accent);
+  box-shadow: var(--wall-shadow-accent);
+}
+
+.wall-overlay-details {
+  background: var(--wall-overlay-gradient);
+}
+
+.wall-remove-btn-wrap {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  z-index: 2;
+  opacity: 0;
+}
+
+.group:hover .wall-remove-btn-wrap,
+.group:focus-within .wall-remove-btn-wrap,
+.wall-remove-btn-wrap:focus-within {
+  opacity: 0.8;
+}
+
+.wall-artwork-fallback {
+  color: var(--wall-accent);
+  background: var(--wall-accent-soft);
+  font-size: clamp(1rem, 4vw, 1.7rem);
+}
+
+.album-wall-main {
+  display: grid;
+  grid-template-columns: minmax(270px, 320px) minmax(0, 1fr);
+  height: 100%;
+  min-height: 0 !important;
+  overflow: hidden;
+}
+
+.album-wall-main > * {
+  min-height: 0;
+}
+
+.album-wall-canvas {
+  background: var(--wall-surface);
+}
+
+.album-wall-export-preview {
+  box-sizing: border-box;
+  height: 18rem;
+  min-height: 16rem;
+  overflow: hidden;
+}
+
+.album-wall-settings-sidebar {
+  width: 100%;
+}
+
+@media (max-width: 760px) {
+  .album-wall-main {
+    display: block;
+    overflow: visible;
+  }
+}
