@@ -12,8 +12,6 @@ export const Header = ({ exportOpened = false, onExportClick }: HeaderProps) => 
     <Tooltip
       disabled={exportOpened}
       label="Export album wall"
-      withinPortal={false}
-      zIndex={50}
     >
       <ActionIcon
         aria-label="Export album wall"
